@@ -81,27 +81,28 @@ fn move_position(position: &mut Position, data: &Vec<Directions>) {
     }
 }
 
+fn as_direction(line: Result<String, std::io::Error>) -> Directions {
+    let operation = line.expect("File read error");
+
+    let mut operation_iter = operation.split_whitespace();
+
+    let command = operation_iter.next().unwrap();
+    let number: isize = operation_iter.next().unwrap().parse().unwrap();
+
+    let direction = match command {
+        "forward" => Directions::Forward(number),
+        "up" => Directions::Up(number),
+        "down" => Directions::Down(number),
+        _ => Directions::NoDirection,
+    };
+
+    direction
+}
+
 fn read_input() -> Vec<Directions> {
     let input_file = File::open("input.txt").expect("File read error");
     let reader = BufReader::new(input_file);
-    let mut data: Vec<Directions> = Vec::new();
-    for line in reader.lines() {
-        let operation = line.expect("File read error");
-
-        let mut operation_iter = operation.split_whitespace();
-
-        let command = operation_iter.next().unwrap();
-        let number: isize = operation_iter.next().unwrap().parse().unwrap();
-
-        let direction = match command {
-            "forward" => Directions::Forward(number),
-            "up" => Directions::Up(number),
-            "down" => Directions::Down(number),
-            _ => Directions::NoDirection,
-        };
-
-        data.push(direction);
-    }
+    let data: Vec<Directions> = reader.lines().map(as_direction).collect();
 
     data
 }
