@@ -1,12 +1,12 @@
 pub mod card {
     #[derive(Debug)]
     pub struct BingoCard {
-        b: Vec<i32>,
-        i: Vec<i32>,
-        n: Vec<i32>,
-        g: Vec<i32>,
-        o: Vec<i32>,
-        dabbed: Vec<i32>,
+        pub b: Vec<i32>,
+        pub i: Vec<i32>,
+        pub n: Vec<i32>,
+        pub g: Vec<i32>,
+        pub o: Vec<i32>,
+        pub dabbed: Vec<i32>,
     }
 
     impl BingoCard {
@@ -79,7 +79,9 @@ pub mod card {
         }
 
         pub fn dab(&mut self, n: i32) {
-            self.dabbed.push(n);
+            if !self.is_winner() {
+                self.dabbed.push(n);
+            } 
         }
 
         pub fn check_rows(&mut self) -> bool {
@@ -130,4 +132,56 @@ pub mod card {
             sum * last_draw
         }
     }
+}
+
+#[test]
+fn test_bingo_cards() {
+    use super::*;
+    let mut card = BingoCard {
+        b: vec![13, 62, 38, 10, 41],
+        i: vec![93, 59, 60, 74, 75],
+        n: vec![79, 18, 57, 90, 28],
+        g: vec![56, 76, 34, 96, 84],
+        o: vec![78, 42, 69, 14, 19],
+        dabbed: Vec::new(),
+    };
+
+    assert!(!card.check_rows());
+
+    card.dab(13);
+    card.dab(62);
+    card.dab(38);
+    card.dab(10);
+
+    assert!(!card.check_rows());
+
+    card.dab(56);
+    card.dab(76);
+    card.dab(34);
+    card.dab(96);
+    card.dab(84);
+
+    assert!(card.check_rows());
+    assert!(card.is_winner());
+    assert!(!card.check_cols());
+
+    let mut card = BingoCard {
+        b: vec![13, 62, 38, 10, 41],
+        i: vec![93, 59, 60, 74, 75],
+        n: vec![79, 18, 57, 90, 28],
+        g: vec![56, 76, 34, 96, 84],
+        o: vec![78, 42, 69, 14, 19],
+        dabbed: Vec::new(),
+    };
+
+    assert!(!card.is_winner());
+
+    card.dab(13);
+    card.dab(93);
+    card.dab(79);
+    card.dab(56);
+    card.dab(78);
+
+    assert!(card.check_cols());
+    assert!(card.is_winner());
 }

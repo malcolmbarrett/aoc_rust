@@ -4,21 +4,28 @@ use bingo::card::BingoCard;
 
 fn main() {
     let input = read_input();
+    let mut first_winning_card = find_winning_card(&input, "first");
+    println!("Part 1: {}", first_winning_card.solve());
+    
+    let mut last_winning_card = find_winning_card(&input, "last");
+    println!("Part 2: {}", last_winning_card.solve());
+}
+
+fn find_winning_card(input: &Vec<Vec<String>>, search: &str) -> BingoCard {
+    let mut winning_card = BingoCard::empty();
+
     if let Some((first, elements)) = input.split_first() {
         let mut draws = collect_draws(first);
         let mut cards = collect_cards(elements);
 
-        let mut first_winning_card = find_first_winning_card(&mut cards, &mut draws);
-        println!("Part 1: {}", first_winning_card.solve());
+        if search == "first" {
+            winning_card = find_first_winning_card(&mut cards, &mut draws)
+        } else {
+            winning_card = find_last_winning_card(&mut cards, &mut draws)
+        } 
     };
 
-    if let Some((first, elements)) = input.split_first() {
-        let mut draws = collect_draws(first);
-        let mut cards = collect_cards(elements);
-
-        let mut last_winning_card = find_last_winning_card(&mut cards, &mut draws);
-        println!("Part 2: {}", last_winning_card.solve());
-    };
+    winning_card
 }
 
 fn find_first_winning_card(cards: &mut Vec<BingoCard>, draws: &mut Vec<i32>) -> BingoCard {
@@ -38,19 +45,16 @@ fn find_first_winning_card(cards: &mut Vec<BingoCard>, draws: &mut Vec<i32>) -> 
 
 fn find_last_winning_card(cards: &mut Vec<BingoCard>, draws: &mut Vec<i32>) -> BingoCard {
     let mut last_winning_card = BingoCard::empty();
-    let mut which_card = 0;
     for draw in draws.iter_mut() {
-        for (i, card) in cards.iter_mut().enumerate() {
+        for card in cards.iter_mut() {
             if !card.is_winner() {
                 card.dab(*draw);
                 if card.is_winner() {
-                    last_winning_card = card.clone();
-                    which_card = i;
-                }
+                    last_winning_card = card.clone()
+                };
             }
         }
     }
-    println!("The last winning card was index {}", which_card);
     last_winning_card
 }
 
@@ -85,46 +89,6 @@ fn read_input() -> Vec<Vec<String>> {
         .map(|s| s.to_string())
         .map(|s| s.split("\n").map(|s| s.to_string()).collect())
         .collect()
-}
-
-#[test]
-fn test_bingo_cards() {
-    let mut card = BingoCard {
-        b: vec![13, 62, 38, 10, 41],
-        i: vec![93, 59, 60, 74, 75],
-        n: vec![79, 18, 57, 90, 28],
-        g: vec![56, 76, 34, 96, 84],
-        o: vec![78, 42, 69, 14, 19],
-        dabbed: Vec::new(),
-    };
-
-    assert!(!card.check_rows());
-
-    card.dab(13);
-    card.dab(62);
-    card.dab(38);
-    card.dab(10);
-
-    assert!(!card.check_rows());
-
-    card.dab(56);
-    card.dab(76);
-    card.dab(34);
-    card.dab(96);
-    card.dab(84);
-
-    assert!(card.check_rows());
-    assert!(card.is_winner());
-    assert!(!card.check_cols());
-
-    card.dab(13);
-    card.dab(93);
-    card.dab(79);
-    card.dab(56);
-    card.dab(78);
-
-    assert!(card.check_cols());
-    assert!(card.is_winner());
 }
 
 #[test]
