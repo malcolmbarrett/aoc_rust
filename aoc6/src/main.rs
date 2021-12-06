@@ -59,7 +59,7 @@ fn model_growth(fish: &mut HashMap<i32, i64>, days: usize) {
 }
 
 fn solve(fish: &HashMap<i32, i64>) -> i64 {
-    fish.values().sum::<i64>()
+    fish.values().sum()
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn test_part_one() {
 #[test]
 fn test_part_two() {
     let mut fish = count_initial_fish(vec![3, 4, 3, 1, 2]);
-    
+
     model_growth(&mut fish, 256);
     assert_eq!(solve(&fish), 26984457539)
 }
