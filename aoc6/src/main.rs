@@ -1,5 +1,5 @@
-use std::fs::read_to_string;
 use std::collections::HashMap;
+use std::fs::read_to_string;
 
 fn main() {
     let mut fish = read_input();
@@ -35,12 +35,12 @@ fn count_initial_fish(input: Vec<i32>) -> HashMap<i32, i64> {
     value_counts
 }
 
-fn simulate_day(fish: &mut HashMap<i32, i64>)  {
+fn simulate_day(fish: &mut HashMap<i32, i64>) {
     let n_new_fish = fish[&0];
     for x in 0..=8 {
         if x == 0 {
             *fish.get_mut(&0).unwrap() = 0;
-        } else if x == 6 { 
+        } else if x == 6 {
             *fish.get_mut(&5).unwrap() += fish[&6];
             *fish.get_mut(&6).unwrap() = n_new_fish;
         } else {
@@ -62,7 +62,7 @@ fn solve(fish: &HashMap<i32, i64>) -> i64 {
     fish.values().sum::<i64>()
 }
 
-#[test] 
+#[test]
 fn test_part_one() {
     let mut fish = count_initial_fish(vec![3, 4, 3, 1, 2]);
     println!("{:?}", fish);
@@ -72,7 +72,7 @@ fn test_part_one() {
     assert_eq!(solve(&fish), 26)
 }
 
-#[test] 
+#[test]
 fn test_part_two() {
     let mut fish = count_initial_fish(vec![3, 4, 3, 1, 2]);
     model_growth(&mut fish, 256);
