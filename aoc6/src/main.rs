@@ -65,17 +65,15 @@ fn solve(fish: &HashMap<i32, i64>) -> i64 {
 #[test]
 fn test_part_one() {
     let mut fish = count_initial_fish(vec![3, 4, 3, 1, 2]);
-    println!("{:?}", fish);
-    model_growth(&mut fish, 18);
-    println!("{:?}", fish);
 
+    model_growth(&mut fish, 18);
     assert_eq!(solve(&fish), 26)
 }
 
 #[test]
 fn test_part_two() {
     let mut fish = count_initial_fish(vec![3, 4, 3, 1, 2]);
+    
     model_growth(&mut fish, 256);
-
     assert_eq!(solve(&fish), 26984457539)
 }
